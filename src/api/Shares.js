@@ -17,6 +17,12 @@ function Shares() {
     const [close1, setClose1] = useState([]);
     const [close2, setClose2] = useState([]);
     const [close3, setClose3] = useState([]);
+    const [high1, setHigh1] = useState([]);
+    const [high2, setHigh2] = useState([]);
+    const [high3, setHigh3] = useState([]);
+    const [low1, setLow1] = useState([]);
+    const [low2, setLow2] = useState([]);
+    const [low3, setLow3] = useState([]);
     const [change1, setChange1] = useState(0);
     const [change2, setChange2] = useState(0);
     const [change3, setChange3] = useState(0);
@@ -40,9 +46,16 @@ function Shares() {
     const navigate = useNavigate();
     const wait = (n) => new Promise((resolve) => setTimeout(resolve, n));
     const list = useState([]);
-    const [closeResponse, setCloseResponse] = useState([]);
+    const [closeResponse1, setCloseResponse1] = useState(0);
+    const [closeResponse2, setCloseResponse2] = useState(0);
+    const [closeResponse3, setCloseResponse3] = useState(0);
+    const [openResponse1, setOpenResponse1] = useState(0);
+    const [openResponse2, setOpenResponse2] = useState(0);
+    const [openResponse3, setOpenResponse3] = useState(0);
     const [response, setResponse] = useState([]);
     const [status, getStatus] = useState();
+    const [nan, setNan] = useState();
+
 
     function returnButton() {
         navbarToken(true);
@@ -78,6 +91,45 @@ function Shares() {
             return currentDate;
     }
 
+    function checkNull(data) {
+        if (!data) {
+            return null;
+        }
+    }
+
+    function round(data) {
+        return Math.round(data * 100) / 100;
+    }
+
+    function checkNan(data) {
+        if (data === "NaN") {
+            if (data === open1) {
+                setOpen1(0);
+                setChange1(0);
+            }
+            if (data === open2) {
+                setOpen2(0);
+                setChange1(0);
+            }
+            if (data === open3) {
+                setOpen3(0);
+                setChange1(0);
+            }
+            if (data === close1) {
+                setClose1(0);
+                setChange1(0);
+            }
+            if (data === close2) {
+                setClose2(0);
+                setChange1(0);
+            }
+            if (data === open3) {
+                setClose3(0);
+                setChange1(0);
+            }
+        }
+    }
+
     async function getData1() {
         NotesService.getShare1()
             .then(async response => {
@@ -86,20 +138,35 @@ function Shares() {
                 const list = response.data;
                 console.log('Printing list!', list);
                 setShare1(list);
+
                 const currentDate = share1.from;
-                const closeResponse = share1.close;
-                const openResponse = share1.open;
-                //console.log('Close is ' + closeResponse + '!');
-                //console.log('Open is ' + openResponse + '!');
+                const closeResponse1 = share1.close;
 
-                getCurrentDate(currentDate);
-                setCurrentDate(currentDate);
+                setCloseResponse1(closeResponse1);
+                const openResponse1 = share1.open;
+                setOpenResponse1(openResponse1);
+                console.log('Close is ' + closeResponse1 + '!');
+                console.log('Open is ' + openResponse1 + '!');
 
-                const change = getChange(openResponse, closeResponse);
+                setCurrentDate(getCurrentDate(currentDate));
+
+                const change1 = getChange(openResponse1, closeResponse1);
                 const status = share1.status;
-                setChange1(change);
-                setChangeColor1(checkColor(change));
+                // checkNull(currentDate);
+                // checkNull(closeResponse1);
+
+                setClose1(round(closeResponse1));
+                setOpen1(round(openResponse1));
+                setHigh1(round(list.high));
+                setLow1(round(list.low));
+
+                setChange1(change1);
+                setChangeColor1(checkColor(change1));
                 setChangeColorStatus1(checkStatus(status));
+
+                checkNan(open1);
+                checkNan(close1);
+
                 setLoading(false);
                 await showButton();
             })
@@ -116,16 +183,27 @@ function Shares() {
                 const list = response.data;
                 console.log('Printing list!', list);
                 setShare2(list);
-                const closeResponse = share2.close;
-                const openResponse = share2.open;
-                //console.log('Close is ' + closeResponse + '!');
-                //console.log('Open is ' + openResponse + '!');
+                const currentDate = share2.from;
+                const closeResponse2 = share2.close;
+                const openResponse2 = share2.open;
+                console.log('Close is ' + closeResponse2 + '!');
+                console.log('Open is ' + openResponse2 + '!');
 
-                const change = getChange(openResponse, closeResponse);
+                const change2 = getChange(openResponse2, closeResponse2);
                 const status = share2.status;
-                setChange2(change);
-                setChangeColor2(checkColor(change));
+
+                setClose2(round(closeResponse2));
+                setOpen2(round(openResponse2));
+                setHigh2(round(list.high));
+                setLow2(round(list.low));
+;
+                setChange2(change2);
+                setChangeColor2(checkColor(change2));
                 setChangeColorStatus2(checkStatus(status));
+
+                checkNan(open2);
+                checkNan(close2);
+
                 setLoading(false);
                 await showButton();
             })
@@ -142,16 +220,27 @@ function Shares() {
                 const list = response.data;
                 console.log('Printing list!', list);
                 setShare3(list);
-                const closeResponse = share3.close;
-                const openResponse = share3.open;
-                //console.log('Close is ' + closeResponse + '!');
-                //console.log('Open is ' + openResponse + '!');
+                const currentDate = share3.from;
+                const closeResponse3 = share3.close;
+                const openResponse3 = share3.open;
+                console.log('Close is ' + closeResponse3 + '!');
+                console.log('Open is ' + openResponse3 + '!');
 
-                const change = getChange(openResponse, closeResponse);
+                const change3 = getChange(openResponse3, closeResponse3);
                 const status = share3.status;
-                setChange3(change);
-                setChangeColor3(checkColor(change));
+
+                setClose3(round(closeResponse3));
+                setOpen3(round(openResponse3));
+                setHigh3(round(list.high));
+                setLow3(round(list.low));
+
+                setChange3(change3);
+                setChangeColor3(checkColor(change3));
                 setChangeColorStatus3(checkStatus(status));
+
+                checkNan(open3);
+                checkNan(close3);
+
                 setLoading(false);
                 await showButton();
             })
@@ -164,7 +253,7 @@ function Shares() {
         getData1();
         getData2();
         getData3();
-    }, []);
+    });
 
     return (
         <div className="main-content">
@@ -199,15 +288,15 @@ function Shares() {
                 </x-h8>
                 <div className="row mb-4 ml-auto">
                     <div className="column left">
-                        Close: {JSON.stringify(share1.close)}
+                        Close: {close1}
                         <div>
-                            Open: {JSON.stringify(share1.open)}
+                            Open: {open1}
                         </div>
                         <div>
-                            High: {JSON.stringify(share1.high)}
+                            High: {high1}
                         </div>
                         <div>
-                            Low: {JSON.stringify(share1.low)}
+                            Low: {low1}
                         </div>
                         <div>
                             Status:
@@ -221,10 +310,10 @@ function Shares() {
                     </div>
                     <div className="column right">
                         {changeColor1 &&
-                            <i className="ml-5" style={{color: "green"}}>{change1.toFixed(2)}</i>
+                            <i className="ml-4" style={{color: "green"}}>{change1.toFixed(2)}</i>
                         }
                         {!changeColor1 &&
-                            <i className="ml-5" style={{color: "red"}}>{change1.toFixed(2)}</i>
+                            <i className="ml-4" style={{color: "red"}}>{change1.toFixed(2)}</i>
                         } %
                     </div>
                 </div>
@@ -235,15 +324,15 @@ function Shares() {
                 </x-h8>
                 <div className="row mb-4 ml-auto">
                     <div className="column left">
-                        Close: {JSON.stringify(share2.close)}
+                        Close: {close2}
                         <div>
-                            Open: {JSON.stringify(share2.open)}
+                            Open: {open2}
                         </div>
                         <div>
-                            High: {JSON.stringify(share2.high)}
+                            High: {high2}
                         </div>
                         <div>
-                            Low: {JSON.stringify(share2.low)}
+                            Low: {low2}
                         </div>
                         <div>
                             Status:
@@ -257,10 +346,10 @@ function Shares() {
                     </div>
                     <div className="column right">
                         {changeColor2 &&
-                            <i className="ml-5" style={{color: "green"}}>{change2.toFixed(2)}</i>
+                            <i className="ml-4" style={{color: "green"}}>{change2.toFixed(2)}</i>
                         }
                         {!changeColor2 &&
-                            <i className="ml-5" style={{color: "red"}}>{change2.toFixed(2)}</i>
+                            <i className="ml-4" style={{color: "red"}}>{change2.toFixed(2)}</i>
                         } %
                     </div>
                 </div>
@@ -271,15 +360,15 @@ function Shares() {
                 </x-h8>
                 <div className="row mb-4 ml-auto">
                 <div className="column left">
-                    Close: {JSON.stringify(share3.close)}
+                    Close: {close3}
                     <div>
-                        Open: {JSON.stringify(share3.open)}
+                        Open: {open3}
                     </div>
                     <div>
-                        High: {JSON.stringify(share3.high)}
+                        High: {high3}
                     </div>
                     <div>
-                        Low: {JSON.stringify(share3.low)}
+                        Low: {low3}
                     </div>
                     <div>
                         Status:
@@ -293,10 +382,10 @@ function Shares() {
                 </div>
                 <div className="column right">
                     {changeColor3 &&
-                        <i className="ml-5" style={{color: "green"}}>{change3.toFixed(2)}</i>
+                        <i className="ml-4" style={{color: "green"}}>{change3.toFixed(2)}</i>
                     }
                     {!changeColor3 &&
-                        <i className="ml-5" style={{color: "red"}}>{change3.toFixed(2)}</i>
+                        <i className="ml-4" style={{color: "red"}}>{change3.toFixed(2)}</i>
                     } %
                 </div>
                 </div>
